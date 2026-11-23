@@ -9,12 +9,19 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+It a minesweeper game, it has a pmdo controller driver, a VGA driver, and uses counter to know the position of the player (a red box)
 
 ## How to test
 
-Explain how to use your project
+It follows standard minesweeper logic, there are "mines" hidden in the light gray block, press A to reveal the block, and if it is a mine you lose.
+
+Controls:
+A = Reveal
+X = Flag (tap in a flag to remove)
+UP/DOWN/LEFT/RIGHT = Move the player position
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+PMOD Controller
+VGA cable
+Monitor/screen compatible with VGA
