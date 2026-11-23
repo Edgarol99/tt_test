@@ -76,7 +76,6 @@ module tt_um_minesweeper (
     );
 
     // ---- output ----
-    wire [1:0] r, g, b;
     vga_render #(.W(W)) u_render (
         .hpos(pix_x), 
         .vpos(pix_y), 
@@ -88,9 +87,9 @@ module tt_um_minesweeper (
         .cursor_y(cur_y),
         .won(won), 
         .lost(lost),
-        .r(r), 
-        .g(g), 
-        .b(b)
+        .r(R), 
+        .g(G), 
+        .b(B)
     );
 
     // Register the outputs so colors and syncs stay aligned and glitch-free.
