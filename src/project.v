@@ -78,5 +78,5 @@ module tt_um_example (
 
     wire [2:0] player_x;
     wire [2:0] player_y;
-    game_logic mine(clk,rst_n,mines,btn,up,down,left,right,revealed_cells,player_x,player_y);
+    game_logic mine(clk,rst_n,mines,zeros,btn,up,down,left,right,revealed_cells,player_x,player_y);
 endmodule

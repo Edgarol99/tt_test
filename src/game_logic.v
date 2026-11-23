@@ -3,6 +3,7 @@ module game_logic(
     input  wire clk,
     input  wire rst_n,
     input [63:0] mines,
+    input [63:0] zeros,
     input btn,up,down,left,right,
     output reg [63:0] revealed_cells,
     output reg [2:0] player_x,
