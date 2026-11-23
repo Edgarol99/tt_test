@@ -49,7 +49,7 @@ module tt_um_example (
             if (video_active) begin
             { R,G,B} <= color;
             end else
-          { R,G,B} <= BLACK;
+          { R,G,B} <= 6'b0;
         end
     end
 
