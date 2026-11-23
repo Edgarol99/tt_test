@@ -37,10 +37,10 @@ module gamepad (
 
     wire ctrl_up,ctrl_down,ctrl_left,ctrl_right,ctrl_btn;
     pulse pad_up(clk,rst_n,inp_up,ctrl_up);
-    pulse pad_down(clk,rst_n,inp_up,ctrl_down);
-    pulse pad_left(clk,rst_n,inp_up,ctrl_left);
-    pulse pad_right(clk,rst_n,inp_up,ctrl_right);
-    pulse pad_btn(clk,rst_n,inp_up,ctrl_btn);
+    pulse pad_down(clk,rst_n,inp_down,ctrl_down);
+    pulse pad_left(clk,rst_n,inp_left,ctrl_left);
+    pulse pad_right(clk,rst_n,inp_right,ctrl_right);
+    pulse pad_btn(clk,rst_n,inp_a,ctrl_btn);
 
     assign up = ctrl_up;
     assign down = ctrl_down;

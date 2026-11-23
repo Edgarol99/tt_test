@@ -39,6 +39,20 @@ module tt_um_example (
         .vpos(pix_y)    
     );
 
+    // RGB output logic
+    always @(posedge clk) begin
+        if (~rst_n) begin
+            R <= 0;
+            G <= 0;
+            B <= 0;
+        end else begin
+            if (video_active) begin
+            { R,G,B} <= color;
+            end else
+          { R,G,B} <= BLACK;
+        end
+    end
+
     wire [2:0] pos_x = pix_x/80;
     wire [2:0] pos_y = pix_y/60;
 
