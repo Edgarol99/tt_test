@@ -1,6 +1,7 @@
 
 module pulse (
     input wire clk,
+    input wire rst_n,
     input wire btn,   
     output reg press 
 );
