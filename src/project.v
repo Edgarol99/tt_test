@@ -16,12 +16,31 @@ module tt_um_example (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-  // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
-  assign uio_out = 0;
-  assign uio_oe  = 0;
+    // VGA signals
+    wire hsync;
+    wire vsync;
+    reg [1:0] R;
+    reg [1:0] G;
+    reg [1:0] B;
+    wire video_active;
+    wire [9:0] pix_x;    wire [9:0] pix_y;
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+    // Tiny VGA Pmod    assign uo_out = {hsync, B[0], G[0], R[0], vsync, B[1], G[1], R[1]};
+
+    hvsync_generator vga_sync_gen (
+        .clk(clk),
+        .reset(~rst_n),
+        .hsync(hsync),
+        .vsync(vsync),
+        .display_on(video_active),
+        .hpos(pix_x),
+        .vpos(pix_y)    );
+
+    wire up,down,left,right,btn;    gamepad control(clk,rst_n,ui_in,up,down,left,right,btn);
+
+    wire [63:0] mines;
+    wire [63:0] zeros;
+    wire [255:0] counts;
+    map minefield(mines,zeros,counts);
 
 endmodule
