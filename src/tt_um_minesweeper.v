@@ -69,7 +69,7 @@ module tt_um_minesweeper (
     wire         won, lost;
     game_logic #(.W(W)) u_game (
         .clk(clk), .rst_n(rst_n),
-        .new_game(new_game), .reveal(reveal),
+        .reveal(btn),
         .cursor_x(cur_x), .cursor_y(cur_y),
         .mines(mines), .zeros(zeros),
         .revealed(revealed), .won(won), .lost(lost)
@@ -78,9 +78,9 @@ module tt_um_minesweeper (
     // ---- output ----
     wire [1:0] r, g, b;
     vga_render #(.W(W)) u_render (
-        .hpos(hpos), 
-        .vpos(vpos), 
-        .active(active),
+        .hpos(pix_x), 
+        .vpos(pix_y), 
+        .active(video_active),
         .revealed(revealed), 
         .mines(mines), 
         .counts(counts),
