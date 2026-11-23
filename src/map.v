@@ -19,7 +19,7 @@ module map (
         integer x,y,dx,dy,nx,ny,c;
         begin
             x = i%8;
-            x = i/8;
+            y = i/8;
             c = 0;
             for (dy =-1; dy<=1; dy = dy+1)
                 for (dx =-1; dx<=1; dx = dx+1) begin

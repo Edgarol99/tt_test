@@ -23,7 +23,7 @@ module tt_um_example (
     reg [1:0] G;
     reg [1:0] B;
     wire video_active;
-    wire [9:0] pix_x;    
+    wire [9:0] pix_x;
     wire [9:0] pix_y;
 
     // Tiny VGA Pmod    
@@ -36,14 +36,20 @@ module tt_um_example (
         .vsync(vsync),
         .display_on(video_active),
         .hpos(pix_x),
-        .vpos(pix_y)    );
+        .vpos(pix_y)    
+    );
 
-    wire up,down,left,right,btn;    
+    wire [2:0] pos_x = pix_x/80;
+    wire [2:0] pos_y = pix_y/60;
+
+    wire up,down,left,right,btn;
     gamepad control(clk,rst_n,ui_in,up,down,left,right,btn);
 
     wire [63:0] mines;
     wire [63:0] zeros;
     wire [255:0] counts;
     map minefield(mines,zeros,counts);
+
+    map_render field(pos_x,poy,0,mines,counts,0,0,{R,G,B});
 
 endmodule
