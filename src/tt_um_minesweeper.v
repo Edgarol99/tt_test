@@ -101,9 +101,12 @@ module tt_um_minesweeper (
         else        vga_reg <= {hsync, b[0], g[0], r[0], vsync, b[1], g[1], r[1]};
     end
 */
-    assign uo_out  = vga_reg;
-    assign uio_out = 8'h00;
-    assign uio_oe  = 8'h00;
 
-    wire _unused = &{ena, uio_in, ui_in[7:6], 1'b0};
+    // Unused outputs assigned to 0.
+    assign uio_out = 0;
+    assign uio_oe  = 0;
+
+    // Suppress unused signals warning
+    wire _unused_ok = &{ena, ui_in[7], ui_in[4:0], uio_in};
+
 endmodule
