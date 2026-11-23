@@ -1,90 +1,66 @@
+// ---------------------------------------------------------------------------
+// game_logic.v : the whole game state is ONE bit per cell ("revealed").
+//
+//   - Flood fill is parallel: every clock, a cell becomes revealed if any
+//     neighbouring cell is already revealed AND is a zero cell. Because the map
+//     is constant, `zeros` is constant, so most terms vanish in synthesis.
+//   - lost / won are derived combinationally from `revealed`, so there are no
+//     extra state flops.
+// ---------------------------------------------------------------------------
+`default_nettype none
 
-module game_logic(
-    input  wire clk,
-    input  wire rst_n,
-    input [63:0] mines,
-    input [63:0] zeros,
-    input btn,up,down,left,right,
-    output reg [63:0] revealed_cells,
-    output reg [2:0] player_x,
-    output reg [2:0] player_y
+module game_logic #(
+    parameter W = 6,
+    parameter N = W * W
+) (
+    input  wire         clk,
+    input  wire         rst_n,
+    input  wire         reveal,         // one-clock pulse
+    input  wire [2:0]   cursor_x,
+    input  wire [2:0]   cursor_y,
+    input  wire [N-1:0] mines,          // constants from board_map
+    input  wire [N-1:0] zeros,
+    output reg  [N-1:0] revealed,
+    output wire         won,
+    output wire         lost
 );
+    // ---- win / lose, derived from the board ----
+    assign lost = |(revealed & mines);
+    assign won  = !lost && ((revealed | mines) == {N{1'b1}});
 
-    //SPREAD
-    reg [63:0] pick;
-    wire [63:0] spread;
-    genvar x,y,dx,dy;
+    // ---- flood fill: spread[i] = 1 if a revealed zero cell touches cell i ----
+    wire [N-1:0] spread;
+
+    genvar x, y, dx, dy;
     generate
-        for (y=0;y<8;y=y+1) begin
-            for (x=0;x<8;x=x+1) begin
-                wire[8:0] hit;
-                for (dy=0;dy<3;dy=dy+1) begin
-                    for (dx=0;dx<3;dx=dx+1) begin
-                        localparam NX = x+dx-1;
-                        localparam NY = x+dx-1;
-                        if (NX>=0 && NX<8 && NY>=0 && NY<8 && (dx==1 && dy==1))
-                            assign hit[dy*3+dx] = revealed_cells[NY*8+NX] & zeros[NY*8+NX];
-                        else 
-                            assign hit [dy*3+dx] = 1'b0;
+        for (y = 0; y < W; y = y + 1) begin : row
+            for (x = 0; x < W; x = x + 1) begin : col
+                wire [8:0] hit;
+                for (dy = 0; dy < 3; dy = dy + 1) begin : ndy
+                    for (dx = 0; dx < 3; dx = dx + 1) begin : ndx
+                        localparam NX = x + dx - 1;
+                        localparam NY = y + dy - 1;
+                        if (NX >= 0 && NX < W && NY >= 0 && NY < W && !(dx == 1 && dy == 1)) begin : real_nb
+                            assign hit[dy*3 + dx] = revealed[NY*W + NX] & zeros[NY*W + NX];
+                        end else begin : no_nb
+                            assign hit[dy*3 + dx] = 1'b0;
+                        end
                     end
                 end
-                assign spread[y*8+x] = |hit;
+                assign spread[y*W + x] = |hit;
             end
         end
     endgenerate
 
-    //STATES
-    localparam START = 0;
-    localparam PLAY = 1;
-    localparam GAMEOVER = 2;
-    localparam WIN = 3;
+    // ---- player's reveal: one-hot at the cursor, ignored once the game is over ----
+    wire [5:0]   idx  = cursor_y * W + cursor_x;
+    wire         can_reveal = reveal && !lost && !won;
+    wire [N-1:0] pick = can_reveal ? ({{(N-1){1'b0}}, 1'b1} << idx) : {N{1'b0}};
 
-    reg [1:0] current_state;
-    reg [1:0] next_state;
-    
-    always @ (posedge clk or negedge rst_n) begin: STATE_MEMORY
+    always @(posedge clk) begin
         if (!rst_n)
-            current_state <= PLAY;
+            revealed <= {N{1'b0}};
         else
-            current_state<=next_state;
+            revealed <= revealed | spread | pick;
     end
-
-    always @ (current_state) begin: NEXT_STATE_LOGIC_AND_OUTPUT_LOGIC
-        case (current_state)
-            START : begin
-                player_x <= 0;
-                player_y <= 0;
-                revealed_cells = 64'b0;
-                if (btn) begin
-                    next_state <= PLAY;
-                end
-            end
-            PLAY : begin
-                if (down)
-                    player_y <= player_y+1;
-                if (up)
-                    player_y <= player_y-1;
-                if (left)
-                    player_x <= player_x-1;
-                if (right)
-                    player_x <= player_x+1;
-                if (btn) begin
-                    if (!revealed_cells[player_id]) begin
-                        pick[player_id] <= 1;
-                        if (mines[player_id])
-                            next_state <= GAMEOVER;
-                    end
-                end
-                revealed_cells <= revealed_cells | spread | pick;
-            end
-            GAMEOVER : begin 
-                if (btn) begin
-                    next_state <= START;
-                end
-            end
-         endcase
-     end
-
-    wire [7:0] player_id = {player_y, player_x};
-
 endmodule
