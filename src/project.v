@@ -72,7 +72,11 @@ module tt_um_example (
     wire [255:0] counts;
     map minefield(mines,zeros,counts);
 
+    wire [63:0] revealed_cells;
     wire [5:0] color;
-    map_render field(pos_x,pos_y,0,mines,counts,0,0,color);
+    map_render field(pos_x,pos_y,revealed_cells,mines,counts,player_x,player_y,color);
 
+    wire [2:0] player_x;
+    wire [2:0] player_y;
+    game_logic mine(clk,rst_n,mines,btn,up,down,left,right,revealed_cells,player_x,player_y);
 endmodule

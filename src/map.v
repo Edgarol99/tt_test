@@ -1,8 +1,8 @@
 
 module map (
-    output [63-1:0] mines,
-    output [63-1:0] zeros,
-    output [255-1:0] counts
+    output [63:0] mines,
+    output [63:0] zeros,
+    output [255:0] counts
 );
     localparam [63:0] MINES = {
         8'b00001000,
