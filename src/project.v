@@ -64,6 +64,7 @@ module tt_um_example (
     wire [255:0] counts;
     map minefield(mines,zeros,counts);
 
-    map_render field(pos_x,pos_y,0,mines,counts,0,0,{R,G,B});
+    wire [5:0] color;
+    map_render field(pos_x,pos_y,0,mines,counts,0,0,color);
 
 endmodule
