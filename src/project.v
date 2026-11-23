@@ -23,9 +23,11 @@ module tt_um_example (
     reg [1:0] G;
     reg [1:0] B;
     wire video_active;
-    wire [9:0] pix_x;    wire [9:0] pix_y;
+    wire [9:0] pix_x;    
+    wire [9:0] pix_y;
 
-    // Tiny VGA Pmod    assign uo_out = {hsync, B[0], G[0], R[0], vsync, B[1], G[1], R[1]};
+    // Tiny VGA Pmod    
+    assign uo_out = {hsync, B[0], G[0], R[0], vsync, B[1], G[1], R[1]};
 
     hvsync_generator vga_sync_gen (
         .clk(clk),
@@ -36,7 +38,8 @@ module tt_um_example (
         .hpos(pix_x),
         .vpos(pix_y)    );
 
-    wire up,down,left,right,btn;    gamepad control(clk,rst_n,ui_in,up,down,left,right,btn);
+    wire up,down,left,right,btn;    
+    gamepad control(clk,rst_n,ui_in,up,down,left,right,btn);
 
     wire [63:0] mines;
     wire [63:0] zeros;
