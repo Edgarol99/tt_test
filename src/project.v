@@ -16,6 +16,14 @@ module tt_um_example (
     input  wire       rst_n     // reset_n - low to reset
 );
 
+
+    // Unused outputs assigned to 0.
+    assign uio_out = 0;
+    assign uio_oe  = 0;
+
+    // Suppress unused signals warning
+    wire _unused_ok = &{ena, ui_in[7], ui_in[4:0], uio_in};
+
     // VGA signals
     wire hsync;
     wire vsync;
